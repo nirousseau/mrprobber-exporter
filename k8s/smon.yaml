@@ -1,0 +1,21 @@
+---
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  labels:
+    app: mrprober
+    prometheus.io/monitor: "true"
+  name: mrprober
+  namespace: monitoring
+spec:
+  endpoints:
+    - interval: 30s
+      path: /metrics
+      port: http
+      scrapeTimeout: 30s
+  namespaceSelector:
+    matchNames:
+      - monitoring
+  selector:
+    matchLabels:
+      app: mrprober

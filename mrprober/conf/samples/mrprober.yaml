@@ -1,0 +1,13 @@
+---
+# mrprober general configuration
+global:
+  tickrate: 15
+  web:
+    listenAddress: "0.0.0.0:9100"
+    metricsPath: "/metrics"
+
+# rules to execute
+rules: []
+
+# alerts to provide for Prometheus Stack
+alerts: []

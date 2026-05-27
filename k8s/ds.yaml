@@ -1,0 +1,55 @@
+---
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  labels:
+    app: mrprober
+  name: mrprober
+  namespace: monitoring
+spec:
+  revisionHistoryLimit: 10
+  selector:
+    matchLabels:
+      app: mrprober
+  template:
+    metadata:
+      labels:
+        app: mrprober
+    spec:
+      automountServiceAccountToken: false
+      containers:
+        - args: []
+          # Release: 1.0
+          image: mrprober@sha256:3f9172530a87ee9043aa99d385be15fe02a6254d12ce90f4cd98b964e31ec2fb
+          imagePullPolicy: IfNotPresent
+          name: mrprober
+          ports:
+            - containerPort: 9100
+              name: http
+              protocol: TCP
+          env:
+            # https://kubernetes.io/docs/tasks/inject-data-application/environment-variable-expose-pod-information/
+            - name: KUBERNETES_NODE_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: spec.nodeName
+          resources: {}
+          volumeMounts:
+            - name: config-volume
+              mountPath: /etc/mrprober
+      restartPolicy: Always
+      securityContext: {}
+      serviceAccountName: monitoring-mrprober
+      terminationGracePeriodSeconds: 30
+      volumes:
+        - name: config-volume
+          configMap:
+            name: mrprober-config
+            items:
+              - key: "mrprober.yaml"
+                path: "mrprober.yaml"
+  updateStrategy:
+    rollingUpdate:
+      maxSurge: 0
+      maxUnavailable: 1
+    type: RollingUpdate

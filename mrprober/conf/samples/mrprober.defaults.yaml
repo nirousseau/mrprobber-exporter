@@ -1,0 +1,36 @@
+---
+# mrprober general configuration
+global:
+  tickrate: 15
+  web:
+    listenAddress: "0.0.0.0:9100"
+    metricsPath: "/metrics"
+
+# rules to execute
+rules:
+  - name: "Test google.com on TCP port 443 with timeout set at 1 ms (must fail)"
+    probe: "net"
+    args:
+      - "tcp://google.com:443"
+      - "1ms"
+
+  - name: "Test google.com on TCP port 443 with timeout set at 120 ms"
+    probe: "net"
+    args:
+      - "tcp://google.com:443"
+      - "120ms"
+
+  - name: "Test 127.0.0.1 on TCP port 445 with timeout set at 60 ms"
+    probe: "net"
+    args:
+      - "tcp://127.0.0.1:445"
+      - "60ms"
+
+  - name: "Test 0.fr.pool.ntp.org on UDP port 123 with timeout set at 150 ms"
+    probe: "net"
+    args:
+      - "udp://0.fr.pool.ntp.org:123"
+      - "150ms"
+
+# alerts to provide for Prometheus Stack
+alerts: []
